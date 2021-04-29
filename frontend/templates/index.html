@@ -10,8 +10,11 @@
     <script src="{% static 'js/index.js' %}"></script>
 </head>
 <body>
-    <h1>CLICKER</h1>
-    <p class="click_count" id="counter">{{maincycle.click_count}}</p>
-    <button onclick="call_click()">click me</button>
+    <a href="{% url 'logout' %}">logout</a>
+    <div class="flex-center">
+        <h1>CLICKER {{user.username}}</h1>
+        <p class="click_count" id="counter">{{maincycle.click_count}}</p>
+        <button onclick="call_click()">click me</button>
+    </div>
 </body>
 </html>
