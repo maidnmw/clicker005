@@ -9,3 +9,16 @@ class MainCycle(models.Model):
 
     def click(self):
         self.click_count += self.click_power
+
+
+class Boost(models.Model):
+    mainCycle = models.ForeignKey(MainCycle, null=False, on_delete=models.CASCADE)
+    power = models.IntegerField(default=1)
+    price = models.IntegerField(default=10)
+
+    def update(self):
+        self.mainCycle.click_power += self.power
+        self.mainCycle.click_count -= self.price
+
+        self.power *= 2 
+        self.price *= 2

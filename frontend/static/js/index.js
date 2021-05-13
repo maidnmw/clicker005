@@ -9,3 +9,16 @@ function call_click() {
         counter.innerText = data
     }).catch(err => console.log(err))
 }
+
+
+function buy_boost(boost_power, boost_price) {
+    fetch(`/api/buy_boost/`, {
+        method: 'GET',
+    }).then(response => {
+        if (response.ok) return response.json()
+        else return Promise.reject(response)
+    }).then(data => {
+        const power = document.getElementById('click_power')
+        power.innerText = data
+    }).catch(err => console.log(err))
+}

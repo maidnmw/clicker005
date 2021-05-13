@@ -11,7 +11,6 @@ def index(request):
     user = User.objects.filter(id=request.user.id).first()
     if user == None:
         return redirect('login')
-
     maincycle = models.MainCycle.objects.filter(user=request.user).first()
     return render(request, 'index.html', {'maincycle': maincycle})
 
@@ -43,3 +42,18 @@ def call_click(request):
     maincycle.save()
 
     return Response(maincycle.click_count)
+
+
+@api_view(['GET'])
+def buy_boost(request):
+    print(request.GET)
+    maincycle = models.MainCycle.objects.filter(user=request.user).first()
+
+    boost = models.Boost()
+    boost.mainCycle = maincycle
+    boost.update()
+
+    boost.save()
+    maincycle.save()
+
+    return Response(maincycle.click_power)
