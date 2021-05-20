@@ -15,7 +15,16 @@
         <h1>CLICKER {{ user.username }}</h1>
         <p class="click_count" id="counter">{{ maincycle.click_count }}</p>
         <button onclick="call_click()">click me +<span id="click_power">{{ maincycle.click_power }}</span></button>
-        <button onclick="buy_boost()">boost me</button>
+
+        <div class="boosts-holder" id="boosts-holder">
+            {% for boost in boosts %}
+                <button class="boost" onclick="buy_boost({{boost.id}})">
+                    <p>BOOST {{boost.id}}</p>
+                    <p>POWER: <span id="boost_power">{{boost.power}}</span></p>
+                    <p>PRICE: <span id="boost_price">{{boost.price}}</span></p>
+                </button>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

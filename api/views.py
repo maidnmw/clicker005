@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from . import models
+from .serializers import MainCycleSerializer, BoostSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -12,7 +13,49 @@ def index(request):
     if user == None:
         return redirect('login')
     maincycle = models.MainCycle.objects.filter(user=request.user).first()
-    return render(request, 'index.html', {'maincycle': maincycle})
+    boosts = maincycle.boost_set.all()
+
+    return render(request, 'index.html', {
+        'maincycle': maincycle, 
+        'boosts': boosts
+    })
+
+
+@api_view(['GET'])
+def call_click(request):
+    maincycle = models.MainCycle.objects.filter(user=request.user).first()
+    maincycle.click()
+
+    boosts = None
+    is_level_up = maincycle.is_level_up()
+
+    maincycle.save()
+    if is_level_up:
+        boost = models.Boost(mainCycle=maincycle, level=maincycle.level, power=maincycle.level*20, price=maincycle.level*50)
+        boost.save()
+
+        boosts = [BoostSerializer(boost).data for boost in maincycle.boost_set.all()]
+
+    return Response({
+        'maincycle': MainCycleSerializer(maincycle).data,
+        'boosts': boosts
+    })
+
+
+@api_view(['POST'])
+def buy_boost(request):
+    boost_id = request.data['boost_id']
+    
+    boost = models.Boost.objects.get(id=boost_id)
+    maincycle = boost.update()
+    boost.save()
+
+    boosts = [BoostSerializer(boost).data for boost in maincycle.boost_set.all()]
+
+    return Response({
+        'maincycle': MainCycleSerializer(maincycle).data,
+        'boosts': boosts,
+    })
 
 
 def register(request):
@@ -33,27 +76,3 @@ def register(request):
 
     form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
-
-
-@api_view(['GET'])
-def call_click(request):
-    maincycle = models.MainCycle.objects.filter(user=request.user).first()
-    maincycle.click()
-    maincycle.save()
-
-    return Response(maincycle.click_count)
-
-
-@api_view(['GET'])
-def buy_boost(request):
-    print(request.GET)
-    maincycle = models.MainCycle.objects.filter(user=request.user).first()
-
-    boost = models.Boost()
-    boost.mainCycle = maincycle
-    boost.update()
-
-    boost.save()
-    maincycle.save()
-
-    return Response(maincycle.click_power)
