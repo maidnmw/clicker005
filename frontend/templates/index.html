@@ -10,21 +10,34 @@
     <script src="{% static 'js/index.js' %}"></script>
 </head>
 <body>
-    <a href="{% url 'logout' %}">logout</a>
-    <div class="flex-center">
-        <h1>CLICKER {{ user.username }}</h1>
-        <p class="click_count" id="counter">{{ maincycle.click_count }}</p>
-        <button onclick="call_click()">click me +<span id="click_power">{{ maincycle.click_power }}</span></button>
+    <main class="container">
+        <aside class="menu-container">
+            <h1>{{ user.username }}</h1>
+            <a href="{% url 'logout' %}">logout</a>
+        </aside>
+        <div class="click-container">
+            <p class="click_count">
+                Coins: <span id="counter">{{ maincycle.click_count }}</span>
+            </p>
+            <button class="click-holder" onclick="call_click()">
+                <img id="click-img" src="{% static 'imgs/kakashi.png' %}">
+            </button>
 
-        <div class="boosts-holder" id="boosts-holder">
-            {% for boost in boosts %}
-                <button class="boost" onclick="buy_boost({{boost.id}})">
-                    <p>BOOST {{boost.id}}</p>
-                    <p>POWER: <span id="boost_power">{{boost.power}}</span></p>
-                    <p>PRICE: <span id="boost_price">{{boost.price}}</span></p>
-                </button>
-            {% endfor %}
+            <p>
+                Power: <span id="click_power">{{ maincycle.click_power }}</span>
+            </p>
         </div>
-    </div>
+        <aside class="boosts-container">
+            <div class="boosts-holder" id="boosts-holder">
+                {% for boost in boosts %}
+                    <button class="boost" onclick="buy_boost({{boost.id}})">
+                        <p>lvl: {{boost.level}}</p>
+                        <p>+<span id="boost_power">{{boost.power}}</span></p>
+                        <p><span id="boost_price">{{boost.price}}</span></p>
+                    </button>
+                {% endfor %}
+            </div>
+        </aside>
+    </main>
 </body>
 </html>

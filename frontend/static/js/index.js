@@ -1,4 +1,6 @@
 function call_click() {
+    click_image()
+
     fetch('/api/call_click/', {
         method: 'GET'
     }).then(response => {
@@ -12,6 +14,14 @@ function call_click() {
             update_boosts(data.boosts)
         }
     }).catch(err => console.log(err))
+}
+
+function click_image() {
+    image = document.getElementById('click-img')
+    image.style.cssText = 'transform: scale(0.95);'
+    setTimeout(function() {
+        image.style.cssText = ''
+    }, 50)
 }
 
 
@@ -59,9 +69,9 @@ function add_boost(parent, boost) {
     button.setAttribute('id', `boost_${boost.id}`)
     button.setAttribute('onclick', `buy_boost(${boost.id})`)
     button.innerHTML = `
-        <p>BOOST ${boost.id}</p>
-        <p>POWER: <span id="boost_power">${boost.power}</span></p>
-        <p>PRICE: <span id="boost_price">${boost.price}</span></p>
+        <p>lvl: ${boost.level}</p>
+        <p>+<span id="boost_power">${boost.power}</span></p>
+        <p><span id="boost_price">${boost.price}</span></p>
     `
     
     parent.appendChild(button)
