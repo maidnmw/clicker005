@@ -1,5 +1,6 @@
 window.onload = function () {
     setAutoClick()
+    set_all_boosts_availability()
 }
 
 function setAutoClick() {
@@ -28,6 +29,7 @@ function call_click() {
         if (data.boosts) {
             update_boosts(data.boosts)
         }
+        set_all_boosts_availability()
     }).catch(err => console.log(err))
 }
 
@@ -65,6 +67,7 @@ function buy_boost(boost_id) {
         auto_power.innerText = data.maincycle.auto_click_power
 
         update_boosts(data.boosts)
+        set_all_boosts_availability()
 
     }).catch(err => console.log(err))
 }
@@ -93,6 +96,24 @@ function add_boost(parent, boost) {
     `
     
     parent.appendChild(button)
+}
+
+function set_all_boosts_availability() {
+    const counter = document.getElementById('counter')
+    const boosts = document.getElementsByClassName('boost')
+
+    for (let boost of boosts) {
+        set_boost_availability(counter.innerText, boost)
+    }
+}
+
+function set_boost_availability(coins, boost) {
+    const price = boost.querySelector("#boost_price").innerHTML
+    if (parseInt(price) > parseInt(coins)) {
+        boost.setAttribute('disabled', 'true')
+    } else {
+        boost.removeAttribute('disabled')
+    }
 }
 
 

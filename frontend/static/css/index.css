@@ -65,6 +65,10 @@ body {
     color: white;
 }
 
+.auto:disabled {
+    color: slategray;
+}
+
 .click-holder {
     display: flex;
     justify-content: center;

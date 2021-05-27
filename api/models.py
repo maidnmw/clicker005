@@ -45,7 +45,6 @@ class Boost(models.Model):
 
         if self.boost_type == 1:
             self.mainCycle.auto_click_power += self.power
-            self.power *= 2 
             self.price *= 5
         elif self.boost_type == 0:
             self.mainCycle.click_power += self.power
