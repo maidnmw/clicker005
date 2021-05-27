@@ -6,6 +6,7 @@ class MainCycle(models.Model):
     user = models.OneToOneField(User, null=False, on_delete=models.CASCADE, default=0)
     click_count = models.IntegerField(default=0)
     click_power = models.IntegerField(default=1)
+    auto_click_power = models.IntegerField(default=0)
     level = models.IntegerField(default=0)
 
     def click(self):
@@ -15,7 +16,9 @@ class MainCycle(models.Model):
         if self.click_count > self.count_level_price():
             self.level += 1
 
-            return True
+            if self.level % 3 == 0:
+                return 2
+            return 1
         return False
 
     def count_level_price(self):
@@ -31,11 +34,22 @@ class Boost(models.Model):
     boost_type = models.IntegerField(default=0)
 
     def update(self):
-        self.mainCycle.click_power += self.power
-        self.mainCycle.click_count -= self.price
-        self.mainCycle.save()
+        if self.price > self.mainCycle.click_count:
+            return False
 
+        self.mainCycle.click_count -= self.price
+
+        self.level += 1
         self.power *= 2 
         self.price *= 5
+
+        if self.boost_type == 1:
+            self.mainCycle.auto_click_power += self.power
+            self.power *= 2 
+            self.price *= 5
+        elif self.boost_type == 0:
+            self.mainCycle.click_power += self.power
+
+        self.mainCycle.save()
 
         return self.mainCycle

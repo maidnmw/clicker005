@@ -30,15 +30,20 @@ def call_click(request):
     is_level_up = maincycle.is_level_up()
 
     maincycle.save()
-    if is_level_up:
-        boost = models.Boost(mainCycle=maincycle, level=maincycle.level, power=maincycle.level*20, price=maincycle.level*50)
+    if is_level_up == 1:
+        boost = models.Boost(mainCycle=maincycle, power=maincycle.level*20, price=maincycle.level*50)
+        boost.save()
+
+        boosts = [BoostSerializer(boost).data for boost in maincycle.boost_set.all()]
+    elif is_level_up == 2:
+        boost = models.Boost(mainCycle=maincycle, power=maincycle.level*10, price=maincycle.level*100, boost_type=1)
         boost.save()
 
         boosts = [BoostSerializer(boost).data for boost in maincycle.boost_set.all()]
 
     return Response({
         'maincycle': MainCycleSerializer(maincycle).data,
-        'boosts': boosts
+        'boosts': boosts,
     })
 
 
@@ -68,6 +73,9 @@ def register(request):
             maincycle = models.MainCycle()
             maincycle.user = user
             maincycle.save()
+
+            boost = models.Boost(mainCycle=maincycle)
+            boost.save()
 
             # authenticate
             return redirect('login')
